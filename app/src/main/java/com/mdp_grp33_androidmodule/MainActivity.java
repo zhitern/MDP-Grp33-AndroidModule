@@ -4,25 +4,69 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity{
 
-    GridAdapter adapter;
+    GridManager gridManager;
+    DraggableImage obstacle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // data to populate the RecyclerView with
-        String[] data = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48"};
+        SetupBotControls();
+        obstacle = new DraggableImage((ImageView)findViewById(R.id.view_obstacle));
 
-        // set up the RecyclerView
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvNumbers);
-        int numberOfColumns = 6;
-        recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
-        adapter = new GridAdapter(this, data);
-        // adapter.setClickListener(this);
-        recyclerView.setAdapter(adapter);
+        gridManager = new GridManager(10, 10, this);
     }
+
+    protected void SetupBotControls(){
+        Button upBtn = (Button)findViewById(R.id.btn_up);
+        Button downBtn = (Button)findViewById(R.id.btn_down);
+        Button leftBtn = (Button)findViewById(R.id.btn_left);
+        Button rightBtn = (Button)findViewById(R.id.btn_right);
+    }
+
+//    protected void SetupMapObstacle(){
+//        obstacleView = (ImageView) findViewById(R.id.view_obstacle);
+//        if (obstacleView == null)
+//            return;
+//
+//        obstacleView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//            }
+//        });
+//    }
+
+//    float x, y;
+//    float dx, dy;
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event){
+//
+//        if (event.getAction() == MotionEvent.ACTION_DOWN){
+//            x = event.getX();
+//            y = event.getY();
+//        }
+//        else if (event.getAction() == MotionEvent.ACTION_MOVE){
+//            dx = event.getX() - x;
+//            dy = event.getY() - y;
+//
+//            obstacleView.setX(obstacleView.getX() + dx);
+//            obstacleView.setY(obstacleView.getY() + dy);
+//
+//            x = event.getX();
+//            y = event.getY();
+//        }
+//
+//        return super.onTouchEvent(event);
+//    }
 }
