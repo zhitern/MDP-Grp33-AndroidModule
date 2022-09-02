@@ -19,7 +19,7 @@ import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
+public class GridAdapter extends RecyclerView.Adapter<GridAdapter.GridItem> {
 
     private List<Character> mData = null;
     private LayoutInflater mInflater;
@@ -36,18 +36,18 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
 
     // Inflates the cell layout from xml when needed
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public GridItem onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.grid_item, parent, false);
         view.getLayoutParams().width = this.itemWidth;
         view.getLayoutParams().height = this.itemHeight;
 
-        ViewHolder viewHolder = new ViewHolder(view);
+        GridItem viewHolder = new GridItem(view);
         return viewHolder;
     }
 
     // Binds the data to the textview in each cell
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(GridItem holder, int position) {
 //        char val = mData.get(position);
 //        holder.textView.setText(String.valueOf(val));
     }
@@ -64,7 +64,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
     }
 
     // Stores and recycles views as they are scrolled off screen
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+    public class GridItem extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         public TextView mytextView;
         public ImageView imageView;
         public View directionIndicator;
@@ -103,7 +103,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
             this.containsObstacle = false;
         }
 
-        public ViewHolder(View itemView) {
+        public GridItem(View itemView) {
             super(itemView);
             this.itemView.setOnClickListener(this);
             this.itemView.setOnLongClickListener(this);
