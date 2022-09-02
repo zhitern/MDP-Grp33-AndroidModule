@@ -3,11 +3,15 @@ package com.mdp_grp33_androidmodule;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +29,7 @@ public class MainActivity extends AppCompatActivity{
         SetupBotControls();
         obstacle = new DraggableImage((ImageView)findViewById(R.id.view_obstacle));
 
-        gridManager = new GridManager(10, 10, this);
+        gridManager = new GridManager(10, 10, 5, this);
     }
 
     protected void SetupBotControls(){
@@ -33,40 +37,32 @@ public class MainActivity extends AppCompatActivity{
         Button downBtn = (Button)findViewById(R.id.btn_down);
         Button leftBtn = (Button)findViewById(R.id.btn_left);
         Button rightBtn = (Button)findViewById(R.id.btn_right);
+
+        Activity mainContext = this;
+
+        upBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(mainContext, "UpBtn Pressed", Toast.LENGTH_SHORT).show();
+            }
+        });
+        downBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(mainContext, "downBtn Pressed", Toast.LENGTH_SHORT).show();
+            }
+        });
+        leftBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(mainContext, "leftBtn Pressed", Toast.LENGTH_SHORT).show();
+            }
+        });
+        rightBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(mainContext, "rightBtn Pressed", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
-
-//    protected void SetupMapObstacle(){
-//        obstacleView = (ImageView) findViewById(R.id.view_obstacle);
-//        if (obstacleView == null)
-//            return;
-//
-//        obstacleView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//            }
-//        });
-//    }
-
-//    float x, y;
-//    float dx, dy;
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event){
-//
-//        if (event.getAction() == MotionEvent.ACTION_DOWN){
-//            x = event.getX();
-//            y = event.getY();
-//        }
-//        else if (event.getAction() == MotionEvent.ACTION_MOVE){
-//            dx = event.getX() - x;
-//            dy = event.getY() - y;
-//
-//            obstacleView.setX(obstacleView.getX() + dx);
-//            obstacleView.setY(obstacleView.getY() + dy);
-//
-//            x = event.getX();
-//            y = event.getY();
-//        }
-//
-//        return super.onTouchEvent(event);
-//    }
 }

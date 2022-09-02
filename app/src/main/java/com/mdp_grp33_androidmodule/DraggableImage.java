@@ -17,7 +17,7 @@ public class DraggableImage {
         img.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                ClipData.Item item = new ClipData.Item((CharSequence)v.getTag());
+                ClipData.Item item = new ClipData.Item("C");
                 String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
 
                 //ClipData dragData = new ClipData(v.getTag().toString(), mimeTypes, item);
@@ -37,23 +37,6 @@ public class DraggableImage {
                 switch(event.getAction()) {
 
                     case DragEvent.ACTION_DRAG_STARTED:
-
-                        // Determines if this View can accept the dragged data.
-                        if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
-
-                            // As an example of what your application might do, applies a blue color tint
-                            // to the View to indicate that it can accept data.
-                            ((ImageView)v).setColorFilter(Color.BLUE);
-
-                            // Invalidate the view to force a redraw in the new tint.
-                            v.invalidate();
-
-                            // Returns true to indicate that the View can accept the dragged data.
-                            return true;
-
-                        }
-
-                        // Returns false to indicate that, during the current drag and drop operation,
                         // this View will not receive events again until ACTION_DRAG_ENDED is sent.
                         return false;
 
