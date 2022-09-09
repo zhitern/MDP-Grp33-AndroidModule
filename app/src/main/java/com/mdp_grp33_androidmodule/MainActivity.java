@@ -1,25 +1,18 @@
 package com.mdp_grp33_androidmodule;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity{
 
     GridManager gridManager;
-    DraggableImage obstacle;
+    Obstacle obstacle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +20,13 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
         SetupBotControls();
-        obstacle = new DraggableImage((ImageView)findViewById(R.id.view_obstacle));
+        obstacle = new Obstacle((ImageView)findViewById(R.id.view_obstacle));
 
-        gridManager = new GridManager(10, 10, 5, this);
+        gridManager = GridManager.GetInstance();
+        gridManager.Init(10, 10, 1, this);
+
+        RobotCar robotCar = (RobotCar) findViewById(R.id.robot_car);
+        robotCar.Init(1);
     }
 
     protected void SetupBotControls(){

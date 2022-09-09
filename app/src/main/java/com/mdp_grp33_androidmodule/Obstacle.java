@@ -8,16 +8,16 @@ import android.view.DragEvent;
 import android.view.View;
 import android.widget.ImageView;
 
-public class DraggableImage {
+public class Obstacle {
 
-    DraggableImage(ImageView img) {
+    Obstacle(ImageView img) {
         if (img == null)
             return;//delete?
 
         img.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                ClipData.Item item = new ClipData.Item("C");
+                ClipData.Item item = new ClipData.Item(" ");
                 String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
 
                 //ClipData dragData = new ClipData(v.getTag().toString(), mimeTypes, item);

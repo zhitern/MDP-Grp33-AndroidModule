@@ -2,6 +2,7 @@ package com.mdp_grp33_androidmodule;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -11,11 +12,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GridManager {
+    private static GridManager instance = null;
 
     GridAdapter adapter;
     RecyclerView recyclerView;
+    public int gridLength = -1;
+    public int spacing = -1;
 
-    public GridManager(int rowCount, int colCount, int spacing, Activity activity){
+    public static GridManager GetInstance() {
+        if (instance == null)
+            instance = new GridManager();
+
+        return instance;
+    }
+    private GridManager(){}
+
+    public void Init(int rowCount, int colCount, int spacing, Activity activity){
         if (activity == null) {
             return;
         }
@@ -32,6 +44,7 @@ public class GridManager {
         float ratio = (float)colCount / rowCount;
         int width = recyclerView.getLayoutParams().width;
         int height = recyclerView.getLayoutParams().height;
+
         if (ratio > 1.0f) {
             recyclerView.getLayoutParams().height = (int)(((float)height / ratio) + 0.5f);
         }
