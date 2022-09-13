@@ -1,25 +1,14 @@
 package com.mdp_grp33_androidmodule;
 
-import android.content.ClipData;
-import android.content.ClipDescription;
 import android.content.Context;
-import android.graphics.Color;
-import android.media.Image;
-import android.text.Layout;
-import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-public class GridAdapter extends RecyclerView.Adapter<GridItem> {
+public class GridAdapter extends RecyclerView.Adapter<GridView> {
 
     private List<Character> mData = null;
     private LayoutInflater mInflater;
@@ -39,20 +28,21 @@ public class GridAdapter extends RecyclerView.Adapter<GridItem> {
 
     // Inflates the cell layout from xml when needed
     @Override
-    public GridItem onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.grid_item, parent, false);
-        view.getLayoutParams().width = this.itemWidth;
-        view.getLayoutParams().height = this.itemHeight;
+    public GridView onCreateViewHolder(ViewGroup parent, int viewType) {
+        Obstacle obs = (Obstacle) mInflater.inflate(R.layout.grid_obstacle, parent, false);
+        obs.getLayoutParams().width = this.itemWidth;
+        obs.getLayoutParams().height = this.itemHeight;
 
-        GridItem viewHolder = new GridItem(view);
+        GridView viewHolder = new GridView(obs);
         return viewHolder;
     }
 
     // Binds the data to the textview in each cell
     @Override
-    public void onBindViewHolder(GridItem holder, int position) {
-//        char val = mData.get(position);
-//        holder.textView.setText(String.valueOf(val));
+    public void onBindViewHolder(GridView holder, int position) {
+        int x = position / GridManager.GetInstance().colCount;
+        int y = position % GridManager.GetInstance().rowCount;
+        holder.grid = new Vec2D(x, y);
     }
 
     // Total number of cells

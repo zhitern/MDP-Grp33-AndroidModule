@@ -7,7 +7,7 @@
     tools:context=".MainActivity">
 
     <FrameLayout
-        android:id="@+id/frameLayout"
+        android:id="@+id/frameGrid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -20,7 +20,7 @@
             android:id="@+id/gridContainer"
             android:layout_width="700dp"
             android:layout_height="700dp"
-            android:background="#8A8A8A">
+            android:background="#FFC107">
 
         </androidx.recyclerview.widget.RecyclerView>
 
@@ -28,7 +28,7 @@
             android:id="@+id/robot_car"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            app:srcCompat="@drawable/robot_car" />
+            app:srcCompat="@mipmap/robot_f1" />
 
     </FrameLayout>
 
@@ -94,21 +94,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.052"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout"
+        app:layout_constraintTop_toBottomOf="@+id/frameGrid"
         app:layout_constraintVertical_bias="0.028" />
-
-    <ImageView
-        android:id="@+id/view_obstacle"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.944"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout"
-        app:layout_constraintVertical_bias="0.074"
-        app:srcCompat="@drawable/ic_launcher_background"
-        app:tint="#000000" />
 
     <TextView
         android:id="@+id/text_robotStatus"
@@ -123,5 +110,61 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_bluetooth"
         app:layout_constraintVertical_bias="0.063" />
+
+    <com.mdp_grp33_androidmodule.ObstacleAdder
+        android:id="@+id/obstacle_adder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.944"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameGrid"
+        app:layout_constraintVertical_bias="0.074">
+
+        <include
+            android:id="@+id/view_obstacle"
+            layout="@layout/grid_obstacle"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:srcCompat="@drawable/ic_launcher_background"
+            app:tint="#000000" />
+    </com.mdp_grp33_androidmodule.ObstacleAdder>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="143dp"
+        android:layout_height="99dp"
+        android:text="Image Rec"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.209"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameGrid"
+        app:layout_constraintVertical_bias="0.572" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="143dp"
+        android:layout_height="99dp"
+        android:text="Fastest Car"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.46"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameGrid"
+        app:layout_constraintVertical_bias="0.286" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="143dp"
+        android:layout_height="99dp"
+        android:text="Send Info"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.46"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameGrid"
+        app:layout_constraintVertical_bias="0.286" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,116 +2,103 @@ package com.mdp_grp33_androidmodule;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
+import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-public class Obstacle {
+public class Obstacle extends FrameLayout implements View.OnClickListener {
+    private static int globalId = 0;
+    private static String label = "obs";
 
-    Obstacle(ImageView img) {
-        if (img == null)
-            return;//delete?
+    public View dirDisplay;
+    public ImageView imgDisplay;
+    public TextView valDisplay;
 
-        img.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                ClipData.Item item = new ClipData.Item(" ");
-                String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
+    private char value = ' ';
+    private int localId = 0;
+    private int direction = 0;
 
-                //ClipData dragData = new ClipData(v.getTag().toString(), mimeTypes, item);
-                ClipData dragData = new ClipData("", mimeTypes, item);
-                View.DragShadowBuilder myShadow = new View.DragShadowBuilder(img);
+    public Obstacle(Context context, AttributeSet attrs) {
+        super(context, attrs);
 
-                v.startDrag(dragData, myShadow, null, 0);
+        this.setOnClickListener(this);
+    }
 
-                return true;
-            }
-        });
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
 
-        img.setOnDragListener(new View.OnDragListener() {
-            @Override
-            public boolean onDrag(View v, DragEvent event) {
-                // Handles each of the expected events.
-                switch(event.getAction()) {
+        dirDisplay = (View) this.getChildAt(2);
+        imgDisplay = (ImageView) this.getChildAt(0);
+        valDisplay = (TextView) this.getChildAt(1);
 
-                    case DragEvent.ACTION_DRAG_STARTED:
-                        // this View will not receive events again until ACTION_DRAG_ENDED is sent.
-                        return false;
+        valDisplay.setTextSize(20);
+        dirDisplay.setRotation(direction * 90);
+    }
 
-                    case DragEvent.ACTION_DRAG_ENTERED:
+    private void SetDirection(int dir){
+        this.direction = dir;
+        dirDisplay.setRotation(direction * 90);
+    }
+    private void SetValue(char val){
+        this.value = val;
+        if (this.value == ' ') {// value not found yet, display ID
+            this.valDisplay.setTypeface(Typeface.DEFAULT);
+            this.valDisplay.setTextColor(Color.WHITE);
+            this.valDisplay.setText(Integer.toString(this.localId));
+        }
+        else {
+            this.valDisplay.setTypeface(Typeface.DEFAULT_BOLD);
+            this.valDisplay.setTextColor(Color.GREEN);
+            this.valDisplay.setText(Character.toString(val));
+        }
+    }
 
-                        // Applies a green tint to the View.
-                        ((ImageView)v).setColorFilter(Color.GREEN);
+    public ClipData GetClipData(boolean isNewlyAdded) {
+        String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
 
-                        // Invalidates the view to force a redraw in the new tint.
-                        v.invalidate();
+        ClipData.Item dir = new ClipData.Item(Integer.toString(this.direction));
+        ClipData.Item id = new ClipData.Item(Integer.toString(this.localId));
+        ClipData.Item val = new ClipData.Item(Character.toString(this.value));
+        ClipData.Item newFlag = new ClipData.Item(Boolean.toString(isNewlyAdded));
 
-                        // Returns true; the value is ignored.
-                        return true;
+        ClipData dragData = new ClipData(Obstacle.label, mimeTypes, dir);
+        dragData.addItem(id);
+        dragData.addItem(val);
+        dragData.addItem(newFlag);
 
-                    case DragEvent.ACTION_DRAG_LOCATION:
+        return dragData;
+    }
+    public boolean LoadClipData(ClipData data) {
+        if (data.getDescription().getLabel().toString().compareTo(Obstacle.label) != 0)// if not equals
+            return false;
 
-                        // Ignore the event.
-                        return true;
+        this.direction = Integer.parseInt(data.getItemAt(0).getText().toString());
+        this.localId = Integer.parseInt(data.getItemAt(1).getText().toString());
+        this.value = data.getItemAt(2).getText().toString().charAt(0);
+        boolean isNewlyAdded = Boolean.parseBoolean(data.getItemAt(3).getText().toString());
 
-                    case DragEvent.ACTION_DRAG_EXITED:
+        if (isNewlyAdded) {
+            this.localId = Obstacle.globalId;
+            Obstacle.globalId += 1;
+        }
 
-                        // Resets the color tint to blue.
-                        ((ImageView)v).setColorFilter(Color.BLUE);
+        SetDirection(this.direction);
+        SetValue(this.value);
 
-                        // Invalidates the view to force a redraw in the new tint.
-                        v.invalidate();
+        return true;
+    }
 
-                        // Returns true; the value is ignored.
-                        return true;
-
-                    case DragEvent.ACTION_DROP:
-
-                        // Gets the item containing the dragged data.
-                        ClipData.Item item = event.getClipData().getItemAt(0);
-
-                        // Gets the text data from the item.
-                        CharSequence dragData = item.getText();
-
-                        // Displays a message containing the dragged data.
-                        // Toast.makeText(this, "Dragged data is " + dragData, Toast.LENGTH_LONG).show();
-
-                        // Turns off any color tints.
-                        ((ImageView)v).clearColorFilter();
-
-                        // Invalidates the view to force a redraw.
-                        v.invalidate();
-
-                        // Returns true. DragEvent.getResult() will return true.
-                        return true;
-
-                    case DragEvent.ACTION_DRAG_ENDED:
-
-                        // Turns off any color tinting.
-                        ((ImageView)v).clearColorFilter();
-
-                        // Invalidates the view to force a redraw.
-                        v.invalidate();
-
-                        // Does a getResult(), and displays what happened.
-//                        if (event.getResult()) {
-//                            Toast.makeText(this, "The drop was handled.", Toast.LENGTH_LONG).show();
-//                        } else {
-//                            Toast.makeText(this, "The drop didn't work.", Toast.LENGTH_LONG).show();
-//                        }
-
-                        // Returns true; the value is ignored.
-                        return true;
-
-                    // An unknown action type was received.
-                    default:
-                        Log.e("DragDrop Example","Unknown action type received by View.OnDragListener.");
-                        break;
-                }
-                return false;
-            }
-        });
+    @Override
+    public void onClick(View view) {
+        //Rotates direction
+        this.SetDirection((direction + 1) % 4);
     }
 }

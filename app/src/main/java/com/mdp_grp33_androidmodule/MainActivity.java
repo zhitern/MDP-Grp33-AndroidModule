@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -19,20 +17,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity{
 
     GridManager gridManager;
-    Obstacle obstacle;
     Button btnBT;
     String connectedDevice = "";
     TextView status;
@@ -48,19 +42,18 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
         SetupBotControls();
-        obstacle = new Obstacle((ImageView)findViewById(R.id.view_obstacle));
 
         gridManager = GridManager.GetInstance();
-        gridManager.Init(10, 10, 1, this);
+        gridManager.Init(20, 20, 0, this);
 
         RobotCar robotCar = (RobotCar) findViewById(R.id.robot_car);
-        robotCar.Init(1);
+        robotCar.Init(4);
 
         status = findViewById(R.id.text_robotStatus);
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         btnBT = findViewById(R.id.btn_bluetooth);
         btService = new BluetoothService(this,mHandler);
-        btService.start();
+        //btService.start();
         btPopup = new BluetoothDeviceActivity();
         btPopup.setBluetoothService(btService);
 
