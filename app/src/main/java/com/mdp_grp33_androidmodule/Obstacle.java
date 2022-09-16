@@ -21,9 +21,9 @@ public class Obstacle extends FrameLayout implements View.OnClickListener {
     public ImageView imgDisplay;
     public TextView valDisplay;
 
-    private char value = ' ';
-    private int localId = 0;
-    private int direction = 0;
+    public char value = ' ';
+    public int localId = 0;
+    public int direction = 0;
 
     public Obstacle(Context context, AttributeSet attrs) {
         super(context, attrs);

@@ -1,5 +1,6 @@
 package com.mdp_grp33_androidmodule;
 
+import android.app.Application;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.graphics.Color;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,6 +39,10 @@ public class GridView extends RecyclerView.ViewHolder implements View.OnDragList
         this.obstacle.imgDisplay.setColorFilter(Color.LTGRAY);
         this.obstacle.setClickable(false);
         this.obstacle.setLongClickable(false);
+
+        if (this.grid != null)
+            Log.i("GridView", "ADD OBS," + Integer.toString(this.obstacle.localId) + Integer.toString(this.grid.x) + "," + Integer.toString(this.grid.y) + Integer.toString(this.obstacle.direction));
+        //Toast.makeText(this.obstacle.getContext(), "ADD OBS" + this.grid.x + ", " + this.grid.y, Toast.LENGTH_SHORT).show();
     }
     protected void ShowObstacle() {
         this.showingObstacle = true;
@@ -45,6 +51,10 @@ public class GridView extends RecyclerView.ViewHolder implements View.OnDragList
         this.obstacle.imgDisplay.setColorFilter(Color.BLACK);
         this.obstacle.setClickable(true);
         this.obstacle.setLongClickable(true);
+
+        if (this.grid != null)
+            Log.i("GridView", "REMOVE OBS," + Integer.toString(this.obstacle.localId));
+        //Toast.makeText(this.obstacle.getContext(), "HIDE OBS" + this.grid.x + ", " + this.grid.y, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -83,7 +93,6 @@ public class GridView extends RecyclerView.ViewHolder implements View.OnDragList
                 ClipData dragData = dragEvent.getClipData();
                 if (this.obstacle.LoadClipData(dragData)) {
                     ShowObstacle();
-                    Log.i("THIS POSSY ISSU", Integer.toString(this.grid.x) + ", " + Integer.toString(this.grid.y));
                 }
 
                 // Returns true. DragEvent.getResult() will return true.

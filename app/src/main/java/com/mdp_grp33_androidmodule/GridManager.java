@@ -90,9 +90,30 @@ public class GridManager {
     }
 
     public Vec2D WorldToGrid(Vec2D point) {
-        return null;
+        int[] location = new int[2];
+        this.recyclerView.getLocationOnScreen(location);
+
+        Vec2D result = new Vec2D();
+
+        //convert to grid local space
+        point.x -= location[0];
+        point.y -= location[1];
+        //if out of bounds
+        if (point.x < 0 || point.x > this.width || point.y < 0 || point.y > this.height) {
+            return null;
+        }
+
+        int colPos = point.x / (gridLength + spacing);
+        int rowPos = point.y / (gridLength + spacing);
+        colPos = Math.min(colPos, colCount);
+        rowPos = Math.min(rowPos, rowCount);
+
+        return new Vec2D(colPos, rowPos);
     }
     public Vec2D GridToWorld(Vec2D point) {
-        return null;
+        int worldX = (spacing * (point.x + 1)) + (gridLength * point.x);
+        int worldY = (spacing * (point.y + 1)) + (gridLength * point.y);
+
+        return new Vec2D(worldX, worldY);
     }
 }

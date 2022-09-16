@@ -11,23 +11,51 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
-public class RobotCar extends androidx.appcompat.widget.AppCompatImageView implements View.OnClickListener, View.OnLongClickListener {
+public class RobotCar extends androidx.appcompat.widget.AppCompatImageView {
+    private static RobotCar instance = null;
+
     private Vec2D pos;
-    private Vec2D origin; // defaul 0,0 is top left
-    private Vec2D boundaryMin;
-    private Vec2D boundaryMax;
+    private int gridCount;
+    private Vec2D origin; // default (0,0) is top left
     private int direction;
 
-    public void Init(int gridCount){
+    public static RobotCar GetInstance() {
+        return instance;
+    }
+
+    public Vec2D GetGrid(){
+        return pos;
+    }
+    public int GetDirection() {
+        return direction;
+    }
+
+    public void SetGrid(int x, int y) {
+        this.pos.x = x;
+        this.pos.y = y;
+        Vec2D point = GridManager.GetInstance().GridToWorld(this.pos);
+
+        this.setX(point.x);
+        this.setY(point.y);
+    }
+    public void SetDirection(int dir) {
+        this.direction = dir;
+        this.setRotation(this.direction * 90);
+    }
+
+    public void Init(int gridCount, Vec2D origin){
+        this.instance = this;
+
+        this.pos = new Vec2D();
+
+        this.gridCount = gridCount;
         this.getLayoutParams().width = gridCount * GridManager.GetInstance().gridLength + (gridCount - 1) * GridManager.GetInstance().spacing;
         this.getLayoutParams().height = gridCount * GridManager.GetInstance().gridLength + (gridCount - 1) * GridManager.GetInstance().spacing;
 
-        this.direction = 0;
-        this.setRotation(this.direction * 90);
+        this.origin = origin;
 
-        this.setOnClickListener(this);
-//        this.setOnDragListener(this);
-//        this.setOnLongClickListener(this);
+        this.setClickable(true);
+        this.SetDirection(0);
     }
 
     public RobotCar(Context context, AttributeSet attrs) {
@@ -35,42 +63,50 @@ public class RobotCar extends androidx.appcompat.widget.AppCompatImageView imple
     }
 
     float x, y;
+    boolean moved;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//            x = event.getX();
-//            y = event.getY();
+            moved = false;
         }
         else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+            moved = true;
 
-            x = event.getRawX() - 68;
+            x = event.getRawX();
             y = event.getRawY();
 
-//            this.setX(x);
-//            this.setY(y);
+            Vec2D grid = GridManager.GetInstance().WorldToGrid(new Vec2D((int)x, (int)y));
 
-            float x2, y2;
-            x2 = event.getRawX();
-            y2 = event.getRawY();
-            Vec2D point = GridManager.GetInstance().GetGridPos(new Vec2D((int)x2, (int)y2));
+            if (grid != null) {
+                grid.x -= origin.x;
+                grid.y -= origin.y;
 
-            if (point != null) {
-                this.setX(point.x);
-                this.setY(point.y);
+                if (CheckBoundary(grid)) {
+                    this.pos = grid;
+                    Vec2D point = GridManager.GetInstance().GridToWorld(grid);
+
+                    this.setX(point.x);
+                    this.setY(point.y);
+                }
             }
+        }
+        else if (event.getAction() == MotionEvent.ACTION_UP) {
+            // On Click
+            if (!moved) {
+                this.SetDirection((direction + 1) % 4);
+            }
+            moved = false;
         }
 
         return super.onTouchEvent(event);
     }
 
-    @Override
-    public void onClick(View view) {
-        //Rotates direction
-        this.direction = (direction + 1) % 4;
-        this.setRotation(this.direction * 90);
-    }
-    @Override
-    public boolean onLongClick(View view) {
+    private boolean CheckBoundary(Vec2D point) {
+
+        if (point.x < 0 || point.x + gridCount > GridManager.GetInstance().colCount)
+            return false;
+        if (point.y < 0 || point.y + gridCount > GridManager.GetInstance().rowCount)
+            return false;
 
         return true;
     }

@@ -47,7 +47,16 @@ public class MainActivity extends AppCompatActivity{
         gridManager.Init(20, 20, 0, this);
 
         RobotCar robotCar = (RobotCar) findViewById(R.id.robot_car);
-        robotCar.Init(4);
+        robotCar.Init(4, new Vec2D(1, 2));
+
+        Button sendBtn = (Button)findViewById(R.id.btn_sendInfo);
+        sendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RobotCar.GetInstance().GetGrid();
+                RobotCar.GetInstance().GetDirection();
+            }
+        });
 
         status = findViewById(R.id.text_robotStatus);
         btAdapter = BluetoothAdapter.getDefaultAdapter();
