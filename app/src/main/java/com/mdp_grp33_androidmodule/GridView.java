@@ -40,9 +40,11 @@ public class GridView extends RecyclerView.ViewHolder implements View.OnDragList
         this.obstacle.setClickable(false);
         this.obstacle.setLongClickable(false);
 
-        if (this.grid != null)
+        if (this.grid != null) {
+            MainActivity.HideObstacles(obstacle.localId);
             Log.i("GridView", "ADD OBS," + Integer.toString(this.obstacle.localId) + Integer.toString(this.grid.x) + "," + Integer.toString(this.grid.y) + Integer.toString(this.obstacle.direction));
-        //Toast.makeText(this.obstacle.getContext(), "ADD OBS" + this.grid.x + ", " + this.grid.y, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this.obstacle.getContext(), "ADD OBS" + this.grid.x + ", " + this.grid.y, Toast.LENGTH_SHORT).show();
+        }
     }
     protected void ShowObstacle() {
         this.showingObstacle = true;
@@ -52,9 +54,11 @@ public class GridView extends RecyclerView.ViewHolder implements View.OnDragList
         this.obstacle.setClickable(true);
         this.obstacle.setLongClickable(true);
 
-        if (this.grid != null)
+        if (this.grid != null) {
+            MainActivity.SendObstacles(obstacle.localId, grid.x, grid.y, obstacle.direction);
             Log.i("GridView", "REMOVE OBS," + Integer.toString(this.obstacle.localId));
-        //Toast.makeText(this.obstacle.getContext(), "HIDE OBS" + this.grid.x + ", " + this.grid.y, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this.obstacle.getContext(), "HIDE OBS" + this.grid.x + ", " + this.grid.y, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

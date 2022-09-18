@@ -19,17 +19,19 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.nio.charset.StandardCharsets;
 
 public class MainActivity extends AppCompatActivity{
+    private static MainActivity instance;
 
     GridManager gridManager;
     Button btnBT;
     String connectedDevice = "";
-    TextView status;
+    TextView bluetoothStatus;
+    TextView robotStatus;
+
 
     BluetoothAdapter btAdapter;
     BluetoothService btService;
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        instance = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -49,22 +52,24 @@ public class MainActivity extends AppCompatActivity{
         RobotCar robotCar = (RobotCar) findViewById(R.id.robot_car);
         robotCar.Init(4, new Vec2D(1, 2));
 
+        robotStatus = findViewById(R.id.text_robotStatus);
+
         Button sendBtn = (Button)findViewById(R.id.btn_sendInfo);
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RobotCar.GetInstance().GetGrid();
-                RobotCar.GetInstance().GetDirection();
+                RobotCar robot = RobotCar.GetInstance();
+                sendCommmand(
+                        "ROBOT" + "," +
+                                Integer.toString(robot.GetGrid().x) + "," +
+                                Integer.toString(robot.GetGrid().y) + "," +
+                                Integer.toString(robot.GetDirection())
+                );
             }
         });
 
-        status = findViewById(R.id.text_robotStatus);
+        bluetoothStatus = findViewById(R.id.text_bluetoothStatus);
         btAdapter = BluetoothAdapter.getDefaultAdapter();
-        btnBT = findViewById(R.id.btn_bluetooth);
-        btService = new BluetoothService(this,mHandler);
-        //btService.start();
-        btPopup = new BluetoothDeviceActivity();
-        btPopup.setBluetoothService(btService);
 
         btPermission();
 
@@ -74,6 +79,12 @@ public class MainActivity extends AppCompatActivity{
                     Intent enableBTIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                     startActivity(enableBTIntent);
                 }else{
+                    btPermission();
+                    if (lastConnected!=null) {
+                        reconnectHandler.removeCallbacks(reconnectRunnable);
+                        lastConnected = null;
+                        connectedDevice = "";
+                    }
                     Bundle bundle = new Bundle();
                     bundle.putString("connectedMAC", connectedDevice);
                     btPopup.setArguments(bundle);
@@ -103,24 +114,28 @@ public class MainActivity extends AppCompatActivity{
         upBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                sendCommmand("w");
                 Toast.makeText(mainContext, "UpBtn Pressed", Toast.LENGTH_SHORT).show();
             }
         });
         downBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                sendCommmand("s");
                 Toast.makeText(mainContext, "downBtn Pressed", Toast.LENGTH_SHORT).show();
             }
         });
         leftBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                sendCommmand("a");
                 Toast.makeText(mainContext, "leftBtn Pressed", Toast.LENGTH_SHORT).show();
             }
         });
         rightBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                sendCommmand("d");
                 Toast.makeText(mainContext, "rightBtn Pressed", Toast.LENGTH_SHORT).show();
             }
         });
@@ -135,11 +150,15 @@ public class MainActivity extends AppCompatActivity{
                     Log.d("Message", "MESSAGE_STATE_CHANGE: " + msg.arg1);
                     switch (msg.arg1) {
                         case Constants.STATE_CONNECTED:
-                            testWrite();
-                            status.setText("Connected");
+                            bluetoothStatus.setText("Ready to Start");
+                            if (lastConnected!=null) {
+                                connectedDevice = lastConnected.getAddress();
+                                reconnectHandler.removeCallbacks(reconnectRunnable);
+                                lastConnected = null;
+                            }
                             break;
                         case Constants.STATE_CONNECTING:
-                            status.setText("Connecting");
+                            bluetoothStatus.setText("Connecting");
                             connectedDevice = "";
                             break;
                         case Constants.STATE_LISTEN:
@@ -152,7 +171,7 @@ public class MainActivity extends AppCompatActivity{
                                 lastConnected = btAdapter.getRemoteDevice(connectedDevice);
                                 promptReconnect();
                             }
-                            status.setText("Not Connected");
+                            bluetoothStatus.setText("Not Connected");
                             connectedDevice = "";
                             break;
                     }
@@ -170,6 +189,7 @@ public class MainActivity extends AppCompatActivity{
                     Log.d("MESSAGE_READ", readMessage);
                     Toast.makeText(getApplicationContext(), readMessage,
                             Toast.LENGTH_SHORT).show();
+                    robotStatus.setText(readMessage);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -189,15 +209,42 @@ public class MainActivity extends AppCompatActivity{
         }
     };
 
-    // write function testing for now
-    private void testWrite(){
-        String test = "hi";
-        btService.write(test.getBytes(StandardCharsets.UTF_8));
+    private void sendCommmand(String command){
+        if(btService!=null&&btService.getState()==Constants.STATE_CONNECTED)
+            btService.write(command.getBytes(StandardCharsets.UTF_8));
+    }
+    public static void SendObstacles(int id, int x, int y, int dir) {
+        instance.sendCommmand(
+                "ADDOBS" + "," +
+                        Integer.toString(id) + "," +
+                        Integer.toString(x) + "," +
+                        Integer.toString(y) + "," +
+                        Integer.toString(dir)
+        );
+    }
+    public static void HideObstacles(int id) {
+        instance.sendCommmand(
+                "HIDEOBS" + "," +
+                        Integer.toString(id)
+        );
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        btPermission();
     }
 
     private void btPermission(){
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED) {
-            status.setText("Bluetooth on");
+            if(btService==null){
+                btnBT = findViewById(R.id.btn_bluetooth);
+                btService = new BluetoothService(this,mHandler);
+                btService.start();
+                btPopup = new BluetoothDeviceActivity();
+                btPopup.setBluetoothService(btService);
+            }
+            bluetoothStatus.setText("Bluetooth on");
         }else if (shouldShowRequestPermissionRationale(Manifest.permission.BLUETOOTH)) {
             new AlertDialog.Builder(MainActivity.this)
                     .setMessage("This app requires Bluetooth")
@@ -214,7 +261,7 @@ public class MainActivity extends AppCompatActivity{
         @Override
         public void run() {
             try {
-                status.setText("Reconnecting");
+                bluetoothStatus.setText("Reconnecting");
                 if (btService.getState() == Constants.STATE_CONNECTED) {
                     Log.d("reconnected",lastConnected.getAddress());
                     connectedDevice = lastConnected.getAddress();

@@ -32,7 +32,7 @@ public class RobotCar extends androidx.appcompat.widget.AppCompatImageView {
 
     public void SetGrid(int x, int y) {
         this.pos.x = x;
-        this.pos.y = y;
+        this.pos.y = GridManager.GetInstance().rowCount - gridCount - y;
         Vec2D point = GridManager.GetInstance().GridToWorld(this.pos);
 
         this.setX(point.x);
@@ -54,8 +54,9 @@ public class RobotCar extends androidx.appcompat.widget.AppCompatImageView {
 
         this.origin = origin;
 
-        this.setClickable(true);
+        //this.setClickable(true);
         this.SetDirection(0);
+        this.SetGrid(0,0);
     }
 
     public RobotCar(Context context, AttributeSet attrs) {

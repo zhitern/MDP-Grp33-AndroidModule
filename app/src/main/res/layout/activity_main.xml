@@ -98,7 +98,7 @@
         app:layout_constraintVertical_bias="0.028" />
 
     <TextView
-        android:id="@+id/text_robotStatus"
+        android:id="@+id/text_bluetoothStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/text_border"
@@ -110,6 +110,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_bluetooth"
         app:layout_constraintVertical_bias="0.063" />
+
+    <TextView
+        android:id="@+id/text_robotStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/text_border"
+        android:text="RobotStatus"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_bluetooth"
+        app:layout_constraintVertical_bias="0.263" />
 
     <com.mdp_grp33_androidmodule.ObstacleAdder
         android:id="@+id/obstacle_adder"
@@ -136,6 +150,7 @@
         android:layout_width="143dp"
         android:layout_height="99dp"
         android:text="Image Rec"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.46"
@@ -148,6 +163,7 @@
         android:layout_width="143dp"
         android:layout_height="99dp"
         android:text="Fastest Car"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.46"
@@ -162,9 +178,9 @@
         android:text="Send Info"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.179"
+        app:layout_constraintHorizontal_bias="0.436"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/frameGrid"
-        app:layout_constraintVertical_bias="0.854" />
+        app:layout_constraintVertical_bias="0.286" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
