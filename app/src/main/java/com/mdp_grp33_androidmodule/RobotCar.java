@@ -58,6 +58,44 @@ public class RobotCar extends androidx.appcompat.widget.AppCompatImageView {
         this.SetDirection(0);
         this.SetGrid(0,0);
     }
+    public void UpdateFromMsg(String[] dataList) {
+        //item 0 is used as message title
+        if (dataList.length < 4)
+            return;
+
+        int x = -1;
+        int y = -1;
+        try {
+            x = Integer.parseInt(dataList[1]);
+            y = Integer.parseInt(dataList[2]);
+        }
+        catch (NumberFormatException e) {
+            return;
+        }
+        String direction = dataList[3];
+        Vec2D newPos = new Vec2D(x, y);
+
+        if (!CheckBoundary(newPos))
+            return;
+
+        this.SetGrid(newPos.x, newPos.y);
+        switch (direction) {
+            case "North":
+                this.SetDirection(1);
+                break;
+            case "South":
+                this.SetDirection(3);
+                break;
+            case "East":
+                this.SetDirection(2);
+                break;
+            case "West":
+                this.SetDirection(0);
+                break;
+            default:
+                break;
+        }
+    }
 
     public RobotCar(Context context, AttributeSet attrs) {
         super(context, attrs);

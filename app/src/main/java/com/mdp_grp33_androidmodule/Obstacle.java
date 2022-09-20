@@ -61,6 +61,17 @@ public class Obstacle extends FrameLayout implements View.OnClickListener {
         }
     }
 
+    public String GetDirectionString() {
+        switch(this.direction) {
+            case 0: return "North";
+            case 1: return "East";
+            case 2: return "South";
+            case 3: return "West";
+
+            default: return "";
+        }
+    }
+
     public ClipData GetClipData(boolean isNewlyAdded) {
         String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
 

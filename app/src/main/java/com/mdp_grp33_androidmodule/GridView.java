@@ -12,8 +12,12 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 // Stores and recycles views as they are scrolled off screen
 public class GridView extends RecyclerView.ViewHolder implements View.OnDragListener, View.OnLongClickListener {
+    public static List<GridView> gridViewList = new ArrayList<GridView>();
 
     public Vec2D grid;
     private boolean showingObstacle = false;
@@ -32,20 +36,6 @@ public class GridView extends RecyclerView.ViewHolder implements View.OnDragList
         this.itemView.setOnLongClickListener(this);
     }
 
-    protected void HideObstacle() {
-        this.showingObstacle = false;
-        this.obstacle.dirDisplay.setVisibility(View.GONE);
-        this.obstacle.valDisplay.setVisibility(View.GONE);
-        this.obstacle.imgDisplay.setColorFilter(Color.LTGRAY);
-        this.obstacle.setClickable(false);
-        this.obstacle.setLongClickable(false);
-
-        if (this.grid != null) {
-            MainActivity.HideObstacles(obstacle.localId);
-            Log.i("GridView", "ADD OBS," + Integer.toString(this.obstacle.localId) + Integer.toString(this.grid.x) + "," + Integer.toString(this.grid.y) + Integer.toString(this.obstacle.direction));
-            //Toast.makeText(this.obstacle.getContext(), "ADD OBS" + this.grid.x + ", " + this.grid.y, Toast.LENGTH_SHORT).show();
-        }
-    }
     protected void ShowObstacle() {
         this.showingObstacle = true;
         this.obstacle.dirDisplay.setVisibility(View.VISIBLE);
@@ -56,8 +46,20 @@ public class GridView extends RecyclerView.ViewHolder implements View.OnDragList
 
         if (this.grid != null) {
             MainActivity.SendObstacles(obstacle.localId, grid.x, grid.y, obstacle.direction);
-            Log.i("GridView", "REMOVE OBS," + Integer.toString(this.obstacle.localId));
-            //Toast.makeText(this.obstacle.getContext(), "HIDE OBS" + this.grid.x + ", " + this.grid.y, Toast.LENGTH_SHORT).show();
+            GridView.gridViewList.add(this);
+        }
+    }
+    protected void HideObstacle() {
+        this.showingObstacle = false;
+        this.obstacle.dirDisplay.setVisibility(View.GONE);
+        this.obstacle.valDisplay.setVisibility(View.GONE);
+        this.obstacle.imgDisplay.setColorFilter(Color.LTGRAY);
+        this.obstacle.setClickable(false);
+        this.obstacle.setLongClickable(false);
+
+        if (this.grid != null) {
+            MainActivity.HideObstacles(obstacle.localId);
+            GridView.gridViewList.remove(this);
         }
     }
 
